@@ -1,0 +1,33 @@
+#include <Wire.h>
+#include <Adafruit_ADS1015.h>
+#include <LiquidCrystal_I2C.h>
+
+Adafruit_ADS1115 ads;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+const int sensorPin = A0;  // Canal A0 del módulo ADS1115 para el sensor de pH
+
+void setup() {
+  ads.begin();
+  lcd.begin(16, 2);
+  lcd.print("pH Level:");
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Leer el valor analógico del sensor de pH
+  int pHValue = ads.readADC_SingleEnded(sensorPin);
+
+  // Convertir el valor analógico a pH (ajusta los valores de calibración según sea necesario)
+  float voltage = pHValue * 0.003;
+  float pH = 7 - voltage;
+
+  // Imprimir el valor de pH en el monitor serie
+  Serial.print("pH Level: ");
+  Serial.println(pH);
+
+  // Actualizar la pantalla LCD
+  lcd.setCursor(0, 1);
+  lcd.print("     ");
+  lcd.setCursor(0, 1);
+  lcd
